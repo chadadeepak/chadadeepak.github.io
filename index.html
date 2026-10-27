@@ -450,18 +450,6 @@ button{font-family:inherit;cursor:pointer;background:none;border:0;color:inherit
   letter-spacing:.18em;margin:0 0 8px;font-weight:600;
 }
 
-/* Resume CTA */
-.resume-btn{
-  display:inline-flex;align-items:center;gap:9px;
-  margin-top:14px;padding:10px 16px;
-  background:#fff;color:#000;border-radius:4px;border:0;
-  font-size:13px;font-weight:700;text-decoration:none;
-  transition:background .15s, opacity .15s;
-  cursor:pointer;font-family:inherit;
-}
-.resume-btn:hover:not(:disabled){background:rgba(255,255,255,.82)}
-.resume-btn:disabled{opacity:.65;cursor:wait}
-.resume-btn .icon{font-size:16px}
 .about-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:50px;align-items:start}
 @media(max-width:800px){.about-grid{grid-template-columns:1fr;gap:32px}}
 .about-grid p{color:#c7c7c7;line-height:1.65;margin:0 0 14px;font-size:15px}
@@ -761,12 +749,10 @@ footer .legal{color:var(--dim);font-size:11px}
       <div class="contact-grid">
         <a href="mailto:deepakreddychada@outlook.com"><span><svg class="icon"><use href="#i-mail"/></svg>Email</span></a>
         <a href="https://linkedin.com/in/deepakchada" target="_blank" rel="noopener noreferrer"><span><svg class="icon"><use href="#i-linkedin"/></svg>LinkedIn</span></a>
-        <a href="https://github.com/deepakchada" target="_blank" rel="noopener noreferrer"><span><svg class="icon"><use href="#i-github"/></svg>GitHub</span></a>
+        <a href="https://github.com/chadadeepak" target="_blank" rel="noopener noreferrer"><span><svg class="icon"><use href="#i-github"/></svg>GitHub</span></a>
+        <a href="https://chadadeepak.github.io" target="_blank" rel="noopener noreferrer"><span><svg class="icon"><use href="#i-external"/></svg>chadadeepak.github.io</span></a>
         <a href="tel:+919640444459"><span><svg class="icon"><use href="#i-phone"/></svg>+91 96404 44459</span></a>
       </div>
-      <button class="resume-btn" id="resumeBtn" type="button">
-        <svg class="icon"><use href="#i-doc"/></svg><span id="resumeBtnLabel">Download résumé (PDF)</span>
-      </button>
     </div>
   </div>
 </section>
@@ -1272,72 +1258,6 @@ document.addEventListener('keydown', (e) => {
 window.openModal = openModal;
 window.closeModal = closeModal;
 
-// ============================================================
-// Résumé download — uses the `downloads` capability so the viewer
-// gets a real save prompt. We fetch resume.pdf (published alongside
-// this page) and hand the blob to claude.use("downloads").save().
-// Falls back to a direct anchor click when the capability is absent
-// (e.g. same page deployed on Vercel outside the Claude viewer).
-// ============================================================
-(function wireResume(){
-  const btn = document.getElementById('resumeBtn');
-  const label = document.getElementById('resumeBtnLabel');
-  if (!btn) return;
-
-  const setLabel = (text) => { if (label) label.textContent = text; };
-
-  btn.addEventListener('click', async () => {
-    const original = label ? label.textContent : '';
-    btn.disabled = true;
-    setLabel('Preparing…');
-
-    try {
-      // Fetch the PDF bundled alongside the page.
-      const res = await fetch('resume.pdf', { cache: 'no-store' });
-      if (!res.ok) throw new Error('fetch failed: ' + res.status);
-      const blob = await res.blob();
-
-      // Try the Claude artifact `downloads` capability first.
-      let saved = false;
-      if (window.claude && typeof window.claude.use === 'function') {
-        try {
-          const downloads = await window.claude.use('downloads');
-          if (downloads && typeof downloads.save === 'function') {
-            await downloads.save({ filename: 'Deepak_Chada_Resume.pdf', data: blob });
-            saved = true;
-          }
-        } catch (e) {
-          // user declined, or capability refused — fall through to anchor fallback
-          saved = false;
-        }
-      }
-
-      // Fallback for deployments outside the Claude viewer (Vercel, etc.):
-      // standard anchor-driven download. Blocked in the artifact viewer by
-      // design, but works everywhere else.
-      if (!saved) {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Deepak_Chada_Resume.pdf';
-        a.rel = 'noopener';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-      }
-
-      setLabel('Downloaded ✓');
-      setTimeout(() => setLabel(original || 'Download résumé (PDF)'), 2000);
-    } catch (err) {
-      console.error(err);
-      setLabel('Download failed — try again');
-      setTimeout(() => setLabel(original || 'Download résumé (PDF)'), 2500);
-    } finally {
-      btn.disabled = false;
-    }
-  });
-})();
 </script>
 </body>
 </html>
