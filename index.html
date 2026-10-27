@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; img-src 'self' https://image.thum.io data:; font-src https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; connect-src 'self'; object-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; connect-src 'self'; object-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 
 <style>
@@ -938,8 +938,9 @@ function buildShot(s){
   const img = el('img', {
     class: 'shot-img',
     loading: 'lazy',
+    decoding: 'async',
     alt: s.name + ' screenshot',
-    src: 'https://image.thum.io/get/width/600/crop/360/https://' + s.url,
+    src: 'shots/' + s.id + '.jpg',
     onload: (e) => { e.currentTarget.classList.add('loaded'); fb.style.opacity = '0'; },
   });
   shot.appendChild(fb);
@@ -1239,7 +1240,7 @@ function openModal(id) {
   hero.insertBefore(fb, hero.firstChild);
   const img = el('img', {
     alt: s.name + ' hero',
-    src: 'https://image.thum.io/get/width/1400/crop/700/https://' + s.url,
+    src: 'shots/' + s.id + '.jpg',
     onload: (e) => { e.currentTarget.classList.add('loaded'); fb.style.opacity = '0'; fb.style.transition = 'opacity .3s'; },
   });
   hero.insertBefore(img, hero.querySelector('.modal-close'));
